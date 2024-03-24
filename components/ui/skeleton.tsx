@@ -1,6 +1,8 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 
+// Compare this snippet from components/ui/form.tsx:
+
 function Skeleton({
   className,
   ...props

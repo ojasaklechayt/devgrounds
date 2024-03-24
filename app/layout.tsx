@@ -3,6 +3,7 @@ import React from "react";
 import { ClerkProvider } from "@clerk/nextjs";
 
 // eslint-disable-next-line camelcase
+// Libraries Used for Fonts is Google and Context for UIs
 import { Inter, Space_Grotesk } from "next/font/google";
 
 import { ThemeProvider } from "@/context/ThemeProvider";

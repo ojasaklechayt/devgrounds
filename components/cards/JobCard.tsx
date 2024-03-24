@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import Metric from "@/components/shared/Metric";
 import JobBadge from "@/components/jobs/JobBadge";
 
+// import of certain reserved libraries and functions from the utils file
+
 import {
   employmentTypeConverter,
   getFormattedSalary,
@@ -33,6 +35,8 @@ interface JobProps {
   };
   postedAt: string;
 }
+
+// Description of Job Card
 
 const JobCard = ({
   title,

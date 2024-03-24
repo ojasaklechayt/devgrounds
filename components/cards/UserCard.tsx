@@ -16,6 +16,8 @@ interface Props {
   };
 }
 
+// UserCard component to display the user card where it holds the user name, username, profile picture, and tags
+
 const UserCard = async ({ user }: Props) => {
   const interactedTags = await getTopInteractedTags({
     userId: user._id,

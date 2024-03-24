@@ -8,6 +8,9 @@ import EditDeleteAction from "@/components/shared/EditDeleteAction";
 
 import { getFormattedNumber, getTimestamp } from "@/lib/utils";
 
+//Question interface to define the props with all parameters
+
+
 interface QuestionProps {
   _id: string;
   title: string;

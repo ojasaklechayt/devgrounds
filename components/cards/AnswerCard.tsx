@@ -24,6 +24,8 @@ interface Props {
   createdAt: Date;
 }
 
+// AnswerCard component to display the answer card where it holds the question title, author, upvotes, and created date
+
 const AnswerCard = ({
   clerkId,
   _id,

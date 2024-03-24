@@ -44,6 +44,9 @@ const MenubarTrigger = React.forwardRef<
     {...props}
   />
 ));
+
+// Compare this snippet from components/ui/menubar.tsx:
+
 MenubarTrigger.displayName = MenubarPrimitive.Trigger.displayName;
 
 const MenubarSubTrigger = React.forwardRef<

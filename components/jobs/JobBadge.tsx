@@ -3,6 +3,9 @@ import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
 
+// JobBadge component
+// works as a badge for job location and company logo
+
 const JobBadge = ({
   data,
   badgeStyles,

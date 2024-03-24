@@ -26,6 +26,9 @@ import { AnswerValidation } from "@/lib/validations";
 
 import type { QuestionId } from "@/lib/actions/shared.types";
 
+// Answer component
+
+
 interface Props extends QuestionId {
   type?: string;
   question: string;

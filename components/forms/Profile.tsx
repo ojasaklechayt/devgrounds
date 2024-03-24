@@ -23,6 +23,8 @@ import { toast } from "@/components/ui/use-toast";
 import { updateUser } from "@/lib/actions/user.action";
 import { ProfileValidation } from "@/lib/validations";
 
+// Profile component
+
 import type { ClerkId } from "@/lib/actions/shared.types";
 
 interface Props extends ClerkId {

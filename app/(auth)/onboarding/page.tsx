@@ -5,6 +5,9 @@ import Profile from "@/components/forms/Profile";
 
 import { getUserById } from "@/lib/actions/user.action";
 
+// Onboarding page
+// works with the Profile component
+
 const Page = async () => {
   const { userId } = auth();
   if (!userId) return null;

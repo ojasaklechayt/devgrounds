@@ -4,7 +4,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 
 // eslint-disable-next-line camelcase
 // Libraries Used for Fonts is Google and Context for UIs
-import { Inter, Space_Grotesk } from "next/font/google";
+import { Manrope, Inter, Space_Grotesk } from "next/font/google";
 
 import { ThemeProvider } from "@/context/ThemeProvider";
 
@@ -19,6 +19,12 @@ const inter = Inter({
 });
 
 const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-spaceGrotesk",
+});
+
+const manrope = Manrope({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
   variable: "--font-spaceGrotesk",
@@ -40,7 +46,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${spaceGrotesk.variable}`}>
+      <body className={`${manrope.variable} `}>
         <ClerkProvider
           appearance={{
             elements: {

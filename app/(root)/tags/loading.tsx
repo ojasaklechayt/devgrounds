@@ -11,8 +11,11 @@ const Loading = () => {
       </div>
 
       <div className="flex flex-wrap gap-4">
-        {[...Array(10)].map((_, i) => (
-          <Skeleton key={i} className="h-60 w-full rounded-2xl sm:w-[260px]" />
+        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => (
+          <Skeleton
+            key={item}
+            className="h-60 w-full rounded-2xl sm:w-[260px]"
+          />
         ))}
       </div>
     </section>

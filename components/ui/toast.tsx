@@ -1,11 +1,11 @@
+/* eslint-disable tailwindcss/classnames-order */
+/* eslint-disable tailwindcss/no-custom-classname */
 import * as React from "react";
 import * as ToastPrimitives from "@radix-ui/react-toast";
 import { cva, type VariantProps } from "class-variance-authority";
 import { X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-
-// Toast
 
 const ToastProvider = ToastPrimitives.Provider;
 
@@ -29,9 +29,9 @@ const toastVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-background text-foreground border",
+        default: "border bg-white text-foreground",
         destructive:
-          "destructive border-destructive bg-destructive text-destructive-foreground group",
+          "destructive group border-destructive bg-red-500 text-white",
       },
     },
     defaultVariants: {

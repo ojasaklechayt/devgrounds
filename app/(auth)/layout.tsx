@@ -1,19 +1,11 @@
 import React from "react";
 
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Auth — DevOverflow",
-};
-
-export default function AuthLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <main className="flex min-h-screen w-full items-center justify-center bg-auth-light bg-cover bg-center bg-no-repeat dark:bg-auth-dark">
+    <main className="flex min-h-screen w-full items-center justify-center ">
       {children}
     </main>
   );
-}
+};
+
+export default Layout;

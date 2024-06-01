@@ -1,27 +1,27 @@
 "use client";
 
-import { useEffect } from "react";
-import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
-
-import { toast } from "@/components/ui/use-toast";
-
-import { upvoteAnswer, downvoteAnswer } from "@/lib/actions/answer.action";
+import { downvoteAnswer, upvoteAnswer } from "@/lib/actions/answer.actions";
 import { viewQuestion } from "@/lib/actions/interaction.action";
 import {
   downvoteQuestion,
   upvoteQuestion,
 } from "@/lib/actions/question.action";
-import { toggleSaveQuestion } from "@/lib/actions/user.action";
-import { getFormattedNumber } from "@/lib/utils";
+import { toggleSaveQuestion } from "@/lib/actions/user.actions";
+import { formatNumber } from "@/lib/utils";
+import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
 
-import type { UserId, Voting } from "@/lib/actions/shared.types";
+import { useEffect } from "react";
+import { toast } from "../ui/use-toast";
 
-interface Props extends UserId, Voting {
+interface Props {
   type: string;
   itemId: string;
+  userId: string;
   upvotes: number;
+  hasUpvoted: boolean;
   downvotes: number;
+  hasDownvoted: boolean;
   hasSaved?: boolean;
 }
 
@@ -30,20 +30,13 @@ const Votes = ({
   itemId,
   userId,
   upvotes,
-  hasupVoted,
+  hasUpvoted,
   downvotes,
-  hasdownVoted,
+  hasDownvoted,
   hasSaved,
 }: Props) => {
-  const router = useRouter();
   const pathname = usePathname();
-
-  useEffect(() => {
-    viewQuestion({
-      questionId: JSON.parse(itemId),
-      userId: userId ? JSON.parse(userId) : undefined,
-    });
-  }, [itemId, userId, pathname, router]);
+  const router = useRouter();
 
   const handleSave = async () => {
     await toggleSaveQuestion({
@@ -52,10 +45,10 @@ const Votes = ({
       path: pathname,
     });
 
-    toast({
+    return toast({
       title: `Question ${
-        !hasSaved ? "saved" : "removed from your collection"
-      } 🎉`,
+        !hasSaved ? "Saved in " : "Removed "
+      } from your collection`,
       variant: !hasSaved ? "default" : "destructive",
     });
   };
@@ -63,8 +56,8 @@ const Votes = ({
   const handleVote = async (action: string) => {
     if (!userId) {
       return toast({
-        title: "Not signed in",
-        description: "You need to be signed in to vote ⚠️",
+        title: "Please log in",
+        description: "You must be logged in to perform this action.",
       });
     }
 
@@ -73,23 +66,23 @@ const Votes = ({
         await upvoteQuestion({
           questionId: JSON.parse(itemId),
           userId: JSON.parse(userId),
-          hasupVoted,
-          hasdownVoted,
+          hasUpvoted,
+          hasDownvoted,
           path: pathname,
         });
       } else if (type === "Answer") {
         await upvoteAnswer({
           answerId: JSON.parse(itemId),
           userId: JSON.parse(userId),
-          hasupVoted,
-          hasdownVoted,
+          hasUpvoted,
+          hasDownvoted,
           path: pathname,
         });
       }
 
-      toast({
-        title: `Upvote ${!hasupVoted ? "added" : "removed"} 🎉`,
-        variant: !hasupVoted ? "default" : "destructive",
+      return toast({
+        title: `Upvote ${!hasUpvoted ? "Successful" : "Removed"}`,
+        variant: !hasUpvoted ? "default" : "destructive",
       });
     }
 
@@ -98,26 +91,34 @@ const Votes = ({
         await downvoteQuestion({
           questionId: JSON.parse(itemId),
           userId: JSON.parse(userId),
-          hasupVoted,
-          hasdownVoted,
+          hasUpvoted,
+          hasDownvoted,
           path: pathname,
         });
       } else if (type === "Answer") {
         await downvoteAnswer({
           answerId: JSON.parse(itemId),
           userId: JSON.parse(userId),
-          hasupVoted,
-          hasdownVoted,
+          hasUpvoted,
+          hasDownvoted,
           path: pathname,
         });
       }
 
-      toast({
-        title: `Downvote ${!hasdownVoted ? "added" : "removed"} 🎉`,
-        variant: !hasdownVoted ? "default" : "destructive",
+      // show a toast
+      return toast({
+        title: `Downvote ${!hasDownvoted ? "Successful" : "Removed"}`,
+        variant: !hasDownvoted ? "default" : "destructive",
       });
     }
   };
+
+  useEffect(() => {
+    viewQuestion({
+      questionId: JSON.parse(itemId),
+      userId: userId ? JSON.parse(userId) : undefined,
+    });
+  }, [itemId, userId, pathname, router]);
 
   return (
     <div className="flex gap-5">
@@ -125,7 +126,7 @@ const Votes = ({
         <div className="flex-center gap-1.5">
           <Image
             src={
-              hasupVoted
+              hasUpvoted
                 ? "/assets/icons/upvoted.svg"
                 : "/assets/icons/upvote.svg"
             }
@@ -133,12 +134,14 @@ const Votes = ({
             height={18}
             alt="upvote"
             className="cursor-pointer"
-            onClick={() => handleVote("upvote")}
+            onClick={() => {
+              handleVote("upvote");
+            }}
           />
 
           <div className="flex-center background-light700_dark400 min-w-[18px] rounded-sm p-1">
             <p className="subtle-medium text-dark400_light900">
-              {getFormattedNumber(upvotes)}
+              {formatNumber(upvotes)}
             </p>
           </div>
         </div>
@@ -146,7 +149,7 @@ const Votes = ({
         <div className="flex-center gap-1.5">
           <Image
             src={
-              hasdownVoted
+              hasDownvoted
                 ? "/assets/icons/downvoted.svg"
                 : "/assets/icons/downvote.svg"
             }
@@ -154,12 +157,14 @@ const Votes = ({
             height={18}
             alt="downvote"
             className="cursor-pointer"
-            onClick={() => handleVote("downvote")}
+            onClick={() => {
+              handleVote("downvote");
+            }}
           />
 
           <div className="flex-center background-light700_dark400 min-w-[18px] rounded-sm p-1">
             <p className="subtle-medium text-dark400_light900">
-              {getFormattedNumber(downvotes)}
+              {formatNumber(downvotes)}
             </p>
           </div>
         </div>
@@ -176,7 +181,9 @@ const Votes = ({
           height={18}
           alt="star"
           className="cursor-pointer"
-          onClick={handleSave}
+          onClick={() => {
+            handleSave();
+          }}
         />
       )}
     </div>

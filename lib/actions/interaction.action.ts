@@ -1,19 +1,17 @@
 "use server";
 
 import Question from "@/database/question.model";
+import { connectToDatabase } from "../mongoose";
+import { ViewQuestionParams } from "./shared";
 import Interaction from "@/database/interaction.model";
-
-import { connectToDatabase } from "@/lib/mongoose";
-
-import type { ViewQuestionParams } from "./shared.types";
 
 export async function viewQuestion(params: ViewQuestionParams) {
   try {
-    connectToDatabase();
+    await connectToDatabase();
 
     const { questionId, userId } = params;
 
-    // update view count for the question
+    // update view count
     await Question.findByIdAndUpdate(questionId, { $inc: { views: 1 } });
 
     if (userId) {
@@ -23,8 +21,10 @@ export async function viewQuestion(params: ViewQuestionParams) {
         question: questionId,
       });
 
-      if (existingInteraction) return console.log("User has already viewed.");
+      if (existingInteraction)
+        return console.log("User has already viewed this question.");
 
+      // create interaction
       await Interaction.create({
         user: userId,
         action: "view",

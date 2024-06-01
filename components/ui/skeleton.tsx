@@ -1,7 +1,5 @@
-import React from "react";
+/* eslint-disable no-undef */
 import { cn } from "@/lib/utils";
-
-// Compare this snippet from components/ui/form.tsx:
 
 function Skeleton({
   className,

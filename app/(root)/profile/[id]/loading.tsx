@@ -13,6 +13,7 @@ const Loading = () => {
           <div className="mt-5 flex flex-wrap items-center justify-start gap-5">
             <Skeleton className="h-9 w-36" />
             <Skeleton className="h-9 w-36" />
+            <Skeleton className="h-9 w-36" />
           </div>
 
           <Skeleton className="mt-8 h-7 w-9/12" />
@@ -38,8 +39,8 @@ const Loading = () => {
           </div>
 
           <div className="mt-5 flex w-full flex-col gap-6">
-            {[...Array(5)].map((_, i) => (
-              <Skeleton key={i} className="h-48 w-full rounded-xl" />
+            {[1, 2, 3, 4, 5].map((item) => (
+              <Skeleton key={item} className="h-48 w-full rounded-xl" />
             ))}
           </div>
         </div>

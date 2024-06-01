@@ -1,16 +1,11 @@
-import React from "react";
-
+/* eslint-disable camelcase */
 import { ClerkProvider } from "@clerk/nextjs";
-
-// eslint-disable-next-line camelcase
-// Libraries Used for Fonts is Google and Context for UIs
-import { Manrope, Inter, Space_Grotesk } from "next/font/google";
-
-import { ThemeProvider } from "@/context/ThemeProvider";
-
+import React from "react";
+import { Inter, Space_Grotesk } from "next/font/google";
 import type { Metadata } from "next";
-
 import "./globals.css";
+import "../styles/prism.css";
+import { Providers } from "./Providers";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -21,19 +16,13 @@ const inter = Inter({
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-spaceGrotesk",
-});
-
-const manrope = Manrope({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-spaceGrotesk",
+  variable: "--font-spaceGrotesk ",
 });
 
 export const metadata: Metadata = {
-  title: "DevOverflow",
+  title: "DevOverFlow",
   description:
-    "A community-driven platform for asking and answering questions about software development. Get help, share knowledge, and collaborate with developers from around the world. Explore topics in web development, mobile app development, game development, algorithms, data structures, and more.",
+    "A community-driven platform for asking and answering programming questions. Get help, share knowledge, and collaborate with developers from around the world.",
   icons: {
     icon: "/assets/images/site-logo.svg",
   },
@@ -45,8 +34,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`${manrope.variable} `}>
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={`${inter.variable} ${spaceGrotesk.variable} custom-scrollbar`}
+      >
         <ClerkProvider
           appearance={{
             elements: {
@@ -55,7 +46,7 @@ export default function RootLayout({
             },
           }}
         >
-          <ThemeProvider>{children}</ThemeProvider>
+          <Providers>{children}</Providers>
         </ClerkProvider>
       </body>
     </html>

@@ -1,33 +1,25 @@
-import { auth } from "@clerk/nextjs";
-import { redirect } from "next/navigation";
-
-import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
+import QuestionCard from "@/components/cards/QuestionCard";
 import Filter from "@/components/shared/Filter";
 import NoResult from "@/components/shared/NoResult";
 import Pagination from "@/components/shared/Pagination";
-import QuestionCard from "@/components/cards/QuestionCard";
-
-import { getSavedQuestions, getUserById } from "@/lib/actions/user.action";
-
+import LocalSearch from "@/components/shared/search/LocalSearch";
 import { QuestionFilters } from "@/constants/filters";
-
-import type { SearchParamsProps } from "@/types";
+import { getSavedQuestions } from "@/lib/actions/user.actions";
+import { SearchParamsProps } from "@/types";
+import { auth } from "@clerk/nextjs";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Collection — DevOverflow",
+  title: "Saved Questions | DevOverFlow",
 };
 
-export default async function Collection({ searchParams }: SearchParamsProps) {
-  const { userId: clerkId } = auth();
+export default async function Home({ searchParams }: SearchParamsProps) {
+  const { userId } = auth();
 
-  if (!clerkId) return null;
-
-  const mongoUser = await getUserById({ userId: clerkId });
-  if (!mongoUser?.onboarded) redirect("/onboarding");
+  if (!userId) return null;
 
   const result = await getSavedQuestions({
-    clerkId,
+    clerkId: userId,
     searchQuery: searchParams.q,
     filter: searchParams.filter,
     page: searchParams.page ? +searchParams.page : 1,
@@ -36,15 +28,15 @@ export default async function Collection({ searchParams }: SearchParamsProps) {
   return (
     <>
       <h1 className="h1-bold text-dark100_light900">Saved Questions</h1>
+
       <div className="mt-11 flex justify-between gap-5 max-sm:flex-col sm:items-center">
-        <LocalSearchbar
+        <LocalSearch
           route="/collection"
           iconPosition="left"
           imgSrc="/assets/icons/search.svg"
-          placeholder="Search for questions"
+          placeholder="Search for questions..."
           otherClasses="flex-1"
         />
-
         <Filter
           filters={QuestionFilters}
           otherClasses="min-h-[56px] sm:min-w-[170px]"
@@ -57,7 +49,6 @@ export default async function Collection({ searchParams }: SearchParamsProps) {
             <QuestionCard
               key={question._id}
               _id={question._id}
-              clerkId={clerkId}
               title={question.title}
               tags={question.tags}
               author={question.author}
@@ -69,14 +60,13 @@ export default async function Collection({ searchParams }: SearchParamsProps) {
           ))
         ) : (
           <NoResult
-            title="No Saved Questions Found"
-            description="It appears that there are no saved questions in your collection at the moment 😔. Start exploring and saving questions that pique your interest 🌟"
-            link="/"
-            linkTitle="Explore Questions"
+            title="There are no saved questions to show."
+            description="Be the first to break the silence, 🚀 Ask a question and kickstart the discussion. Our Query could be the next big thing others learn from. Get invloved! 💡"
+            link="/ask-question"
+            linkTitle="Ask a Question"
           />
         )}
       </div>
-
       <div className="mt-10">
         <Pagination
           pageNumber={searchParams?.page ? +searchParams.page : 1}

@@ -1,29 +1,11 @@
-import { auth } from "@clerk/nextjs";
-
 import QuestionCard from "@/components/cards/QuestionCard";
 import NoResult from "@/components/shared/NoResult";
 import Pagination from "@/components/shared/Pagination";
-import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
-
-import { getTagById, getQuestionsByTagId } from "@/lib/actions/tag.action";
-
-import type { URLProps } from "@/types";
-import type { Metadata } from "next";
-
-export async function generateMetadata({
-  params,
-}: Omit<URLProps, "searchParams">): Promise<Metadata> {
-  const tag = await getTagById({ tagId: params.id });
-
-  return {
-    title: `Posts by tag '${tag.name}' — DevOverflow`,
-    description: tag.description || `Questions tagged with ${tag.name}`,
-  };
-}
+import LocalSearch from "@/components/shared/search/LocalSearch";
+import { getQuestionsByTagId } from "@/lib/actions/tags.actions";
+import { URLProps } from "@/types";
 
 const Page = async ({ params, searchParams }: URLProps) => {
-  const { userId: clerkId } = auth();
-
   const result = await getQuestionsByTagId({
     tagId: params.id,
     searchQuery: searchParams.q,
@@ -33,12 +15,13 @@ const Page = async ({ params, searchParams }: URLProps) => {
   return (
     <>
       <h1 className="h1-bold text-dark100_light900">{result.tagTitle}</h1>
+
       <div className="mt-11 w-full">
-        <LocalSearchbar
+        <LocalSearch
           route={`/tags/${params.id}`}
           iconPosition="left"
           imgSrc="/assets/icons/search.svg"
-          placeholder="Search tag questions"
+          placeholder="Search tag questions..."
           otherClasses="flex-1"
         />
       </div>
@@ -49,7 +32,6 @@ const Page = async ({ params, searchParams }: URLProps) => {
             <QuestionCard
               key={question._id}
               _id={question._id}
-              clerkId={clerkId}
               title={question.title}
               tags={question.tags}
               author={question.author}
@@ -61,14 +43,13 @@ const Page = async ({ params, searchParams }: URLProps) => {
           ))
         ) : (
           <NoResult
-            title="No Tag Questions Found"
-            description="It appears that there are no saved questions in your collection at the moment 😔.Start exploring and saving questions that pique your interest 🌟"
-            link="/"
-            linkTitle="Explore Questions"
+            title="There are no tag questions to show."
+            description="Be the first to break the silence, 🚀 Ask a question and kickstart the discussion. Our Query could be the next big thing others learn from. Get invloved! 💡"
+            link="/ask-question"
+            linkTitle="Ask a Question"
           />
         )}
       </div>
-
       <div className="mt-10">
         <Pagination
           pageNumber={searchParams?.page ? +searchParams.page : 1}

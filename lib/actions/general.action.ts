@@ -1,64 +1,79 @@
 "use server";
 
-import Question from "@/database/question.model";
-import User from "@/database/user.model";
 import Answer from "@/database/answer.model";
+import Question from "@/database/question.model";
 import Tag from "@/database/tag.model";
-
+import User from "@/database/user.model";
 import { connectToDatabase } from "../mongoose";
-import { SearchParams } from "./shared.types";
+import { SearchParams } from "./shared";
 
-const SearchableTypes = ["question", "user", "answer", "tag"];
+const SearchableTypes = ["question", "answer", "user", "tag"];
 
 export async function globalSearch(params: SearchParams) {
   try {
-    connectToDatabase();
+    await connectToDatabase();
 
     const { query, type } = params;
+
     const regexQuery = { $regex: query, $options: "i" };
 
-    let results = [];
+    let results: { title: any; type: string | null | undefined; id: any }[] =
+      [];
 
     const modelsAndTypes = [
-      { model: Question, searchField: "title", type: "question" },
-      { model: User, searchField: "name", type: "user" },
-      { model: Answer, searchField: "content", type: "answer" },
-      { model: Tag, searchField: "name", type: "tag" },
+      {
+        model: Question,
+        searchField: "title",
+        type: "question",
+      },
+      {
+        model: User,
+        searchField: "name",
+        type: "user",
+      },
+      {
+        model: Answer,
+        searchField: "content",
+        type: "answer",
+      },
+      {
+        model: Tag,
+        searchField: "name",
+        type: "tag",
+      },
     ];
 
     const typeLower = type?.toLowerCase();
 
     if (!typeLower || !SearchableTypes.includes(typeLower)) {
-      // Search across all types
-
+      // search everything
       for (const { model, searchField, type } of modelsAndTypes) {
         const queryResults = await model
           .find({ [searchField]: regexQuery })
-          .limit(8);
+          .limit(2);
 
         results.push(
           ...queryResults.map((item) => ({
             title:
               type === "answer"
-                ? `Answer containing "${query}"`
+                ? `Answers containing ${query}`
                 : item[searchField],
             type,
             id:
               type === "user"
                 ? item.clerkId
                 : type === "answer"
-                ? [item.question, item._id]
+                ? item.question
                 : item._id,
           }))
         );
       }
     } else {
-      // Search only in the specified model type
-
+      // search specified model for the selected type:- question,answer,user,tag.
       const modelInfo = modelsAndTypes.find((item) => item.type === type);
 
       if (!modelInfo) {
-        throw new Error("Invalid type specified");
+        throw new Error("Invalid Search Type");
       }
 
       const queryResults = await modelInfo.model
@@ -70,21 +85,21 @@ export async function globalSearch(params: SearchParams) {
       results = queryResults.map((item) => ({
         title:
           type === "answer"
-            ? `Answers containing "${query}"`
+            ? `Answers containing ${query}`
             : item[modelInfo.searchField],
         type,
         id:
           type === "user"
             ? item.clerkId
             : type === "answer"
-            ? [item.question, item._id]
+            ? item.question
             : item._id,
       }));
     }
 
     return JSON.stringify(results);
-  } catch (error: any) {
-    console.log(`Error fetching the global results: ${error}`);
+  } catch (error) {
+    console.log(error);
     throw error;
   }
 }
